@@ -7,7 +7,7 @@ const Header = () => {
             <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-3xl">visibility_off</span>
                 <h1 className="font-display font-bold text-2xl tracking-widest text-white">
-                    PHANTOM<span className="text-primary">.IO</span>
+                    Paradoxical<span className="text-primary">_Prism</span>
                 </h1>
             </div>
             <nav className="hidden md:flex gap-8">

@@ -14,7 +14,7 @@ const Home = () => {
 
         <div className="flex justify-between items-start mb-8 z-10 relative">
           <div>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold uppercase mb-2 text-white tracking-wide drop-shadow-md">Hidden Reports</h2>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold uppercase mb-2 text-white tracking-wide drop-shadow-md">Paradoxical_Prism</h2>
             <h3 className="font-display text-2xl lg:text-3xl font-light text-gray-600 uppercase tracking-widest">Visible Art</h3>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 bg-input-bg rounded border border-border-dark text-xs font-bold tracking-widest text-gray-400 hover:text-white hover:border-primary/50 transition shadow-lg">
