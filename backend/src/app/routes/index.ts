@@ -3,15 +3,15 @@ import { ArtworkRoutes } from '../modules/artwork/artwork.route';
 import { DecodeRoutes } from '../modules/decode/decode.route';
 import { ReportRoutes } from '../modules/report/report.route';
 import { ReviewerRoutes } from '../modules/reviewer/reviewer.route';
-// import { UserRoutes } from '../modules/user/user.route'; // User module seems missing in current structure
+import { UserRoutes } from '../modules/user/user.route';
 
 const router = Router();
 
 const moduleRoutes = [
-  // {
-  //   path: '/users',
-  //   route: UserRoutes,
-  // },
+  {
+    path: '/users',
+    route: UserRoutes,
+  },
   {
     path: '/artworks',
     route: ArtworkRoutes,

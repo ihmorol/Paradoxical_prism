@@ -1,74 +1,48 @@
 import { Schema, model } from 'mongoose';
-import { TReport } from './report.interface';
-import { ReportStatus, ReportSeverity } from './report.constant';
+import { IReport } from './report.interface';
 
-const reportSchema = new Schema<TReport>(
+const reportSchema = new Schema<IReport>(
     {
-        id: {
+        report_id: {
             type: String,
             required: true,
             unique: true,
         },
-        title: {
+        category: {
             type: String,
             required: true,
         },
-        description: {
+        location_context: {
             type: String,
             required: true,
         },
-        type: {
+        encrypted_payload: {
             type: String,
             required: true,
         },
-        severity: {
+        encryption_iv: {
             type: String,
-            enum: ReportSeverity,
-            default: 'medium',
+            required: true,
+        },
+        decode_key_hash: {
+            type: String,
+            required: true,
+        },
+        art_id: {
+            type: String,
         },
         status: {
             type: String,
-            enum: ReportStatus,
-            default: 'open',
-        },
-        reporterId: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-        },
-        assigneeId: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-        },
-        resolution: {
-            type: String,
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false,
-        },
-        deletedAt: {
-            type: Date,
+            enum: ['new', 'processing', 'completed'],
+            default: 'new',
         },
     },
     {
-        timestamps: true,
-    },
+        timestamps: {
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
+        },
+    }
 );
 
-reportSchema.index({ title: 1 });
-reportSchema.index({ status: 1 });
-reportSchema.index({ reporterId: 1 });
-reportSchema.index({ assigneeId: 1 });
-
-reportSchema.pre('find', function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next();
-});
-
-reportSchema.pre('findOne', function (next) {
-    this.find({ isDeleted: { $ne: true } });
-    next();
-});
-
-export const Report = model<TReport>('Report', reportSchema);
+export const Report = model<IReport>('Report', reportSchema);
