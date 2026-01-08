@@ -1,0 +1,55 @@
+{
+    "hero": {
+        "title": "Hidden Reports, Visible Art.",
+        "subtitle": "A prototype platform where encrypted whistleblower reports appear as abstract artworks. Only authorized reviewers with a secret key can decode the hidden messages.",
+        "primaryActions": [
+            {
+                "label": "Create a Hidden Report",
+                "link": "/report/new",
+                "variant": "primary"
+            },
+            {
+                "label": "Browse Artworks",
+                "link": "/gallery",
+                "variant": "secondary"
+            }
+        ]
+    },
+    "concept": {
+        "text": [
+            "Each artwork in the gallery may contain an encrypted report.",
+            "Reporters stay anonymous; only trusted reviewers with a secret key can read the full text."
+        ]
+    },
+    "ethics": {
+        "heading": "Ethics & Safety",
+        "body": [
+            "This is a prototype, not a legal or emergency whistleblowing channel.",
+            "Do not use it to report life‑threatening situations or seek urgent help.",
+            "Not for planning crime, coordinating harm, or sharing illegal content."
+        ]
+    },
+    "secondaryLinks": [
+        {
+            "label": "Decode with key",
+            "link": "/decode"
+        },
+        {
+            "label": "Reviewer console",
+            "link": "/reviewer/reports"
+        }
+    ],
+    "footer": {
+        "text": "Hackathon prototype inspired by whistleblowing and steganography research. Not for production use.",
+        "links": [
+            {
+                "label": "Roadmap / Future work",
+                "link": "#"
+            },
+            {
+                "label": "GitHub repo",
+                "link": "#"
+            }
+        ]
+    }
+}
