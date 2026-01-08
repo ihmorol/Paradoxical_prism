@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reviewer Console List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FF5F1F", // Safety Orange
+                        "primary-dim": "#CC4410", 
+                        "background-dark": "#050505", // Deepest dark background
+                        "surface-dark": "#16181D", // Lighter gray for card visibility
+                        "surface-lighter": "#23262E", // Even lighter for hovers/nested
+                        "neon-green": "#00FF41",
+                        "industrial-gray": "#2A2E35",
+                    },
+                    fontFamily: {
+                        display: ["Orbitron", "sans-serif"],
+                        body: ["Rajdhani", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem", // Sharper corners for industrial look
+                        'lg': "0.5rem",
+                        'xl': "0.75rem",
+                        '2xl': "1rem",
+                    },
+                    boxShadow: {
+                        'neon': '0 0 5px theme("colors.primary"), 0 0 20px theme("colors.primary")',
+                        'neon-green': '0 0 5px theme("colors.neon-green"), 0 0 10px theme("colors.neon-green")',
+                        'glow': '0 0 15px rgba(255, 95, 31, 0.15)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #16181D; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 0px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5F1F; 
+        }
+        .status-dot {
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px currentColor;
+        }body {
+            background-image: 
+                linear-gradient(rgba(11, 12, 16, 0.95), rgba(11, 12, 16, 0.95)),
+                linear-gradient(rgba(255, 95, 31, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 95, 31, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-color: #050505;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-gray-300 font-body min-h-screen selection:bg-primary selection:text-white antialiased">
+<div class="max-w-[1600px] mx-auto p-4 md:p-6 flex flex-col gap-6 h-screen">
+<header class="flex flex-col md:flex-row justify-between items-center bg-surface-dark p-6 rounded-none border-b-2 border-primary/50 relative overflow-hidden backdrop-blur-sm bg-opacity-95 shadow-card">
+<div class="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary opacity-20"></div>
+<div class="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-primary opacity-20"></div>
+<div class="flex items-center gap-4 z-10 w-full md:w-auto mb-4 md:mb-0">
+<div class="h-10 w-10 bg-surface-lighter border border-primary/30 flex items-center justify-center text-primary font-display font-bold text-xl shadow-[0_0_10px_rgba(255,95,31,0.2)]">
+<span class="material-symbols-outlined">security</span>
+</div>
+<h1 class="text-2xl font-display font-bold tracking-widest text-white uppercase">
+                    Whistle<span class="text-primary">Blower</span>
+<span class="text-[10px] bg-primary/20 text-primary px-1 py-0.5 align-top ml-2 border border-primary/20">SYS.VER.0.9</span>
+</h1>
+</div>
+<nav class="flex gap-1 md:gap-6 text-sm font-bold tracking-widest uppercase z-10 w-full md:w-auto justify-center md:justify-end items-center">
+<a class="px-3 py-2 hover:text-primary transition-colors duration-200 border-b-2 border-transparent hover:border-primary/50" href="#">Home</a>
+<a class="px-3 py-2 hover:text-primary transition-colors duration-200 border-b-2 border-transparent hover:border-primary/50" href="#">Gallery</a>
+<a class="px-3 py-2 hover:text-primary transition-colors duration-200 border-b-2 border-transparent hover:border-primary/50" href="#">Decode</a>
+<a class="px-3 py-2 text-primary border-b-2 border-primary bg-primary/5" href="#">Reviewer</a>
+</nav>
+<div class="hidden md:flex gap-3 items-center ml-8 border-l border-white/10 pl-8">
+<button class="p-2 rounded-none bg-surface-lighter border border-white/5 hover:border-primary/50 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+</button>
+<button class="p-2 rounded-none bg-surface-lighter border border-white/5 hover:border-primary/50 hover:text-primary transition-all relative group">
+<span class="absolute -top-1 -right-1 h-2 w-2 bg-primary rounded-none animate-pulse shadow-neon"></span>
+<span class="material-symbols-outlined text-sm group-hover:animate-pulse">notifications</span>
+</button>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-hidden">
+<aside class="lg:col-span-3 flex flex-col gap-6 overflow-y-auto pr-1">
+<div class="bg-surface-dark p-6 border border-white/10 relative group hover:border-primary/30 transition-colors shadow-card">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-xs font-display text-gray-500 uppercase tracking-wider">Total Reports</h3>
+<span class="material-symbols-outlined text-primary text-opacity-80">analytics</span>
+</div>
+<div class="text-4xl font-display font-bold text-white mb-2 tracking-tighter">1,248</div>
+<div class="w-full bg-surface-lighter h-1 mt-2 overflow-hidden">
+<div class="bg-primary h-full w-3/4 shadow-[0_0_10px_rgba(255,95,31,0.5)] relative">
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-white animate-pulse"></div>
+</div>
+</div>
+<div class="mt-4 flex justify-between text-xs font-mono">
+<span class="text-neon-green flex items-center gap-1 shadow-black drop-shadow-sm">
+<span class="material-symbols-outlined text-xs">trending_up</span> +12% CYCLE
+                        </span>
+<span class="text-gray-600">PREV_CYCLE_COMP</span>
+</div>
+</div>
+<div class="bg-surface-dark p-6 border border-white/10 flex-1 flex flex-col justify-between relative overflow-hidden shadow-card">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50"></div>
+<div>
+<h3 class="text-xs font-display text-gray-500 uppercase tracking-wider mb-8 text-center border-b border-white/5 pb-2">Threat Level Assessment</h3>
+<div class="relative h-48 w-48 mx-auto flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border border-dashed border-gray-700 animate-[spin_10s_linear_infinite]"></div>
+<div class="absolute inset-2 rounded-full border border-dashed border-gray-800 animate-[spin_15s_linear_infinite_reverse]"></div>
+<div class="absolute inset-4 rounded-full border-[2px] border-primary/20"></div>
+<div class="absolute inset-4 rounded-full border-[2px] border-primary border-t-transparent border-l-transparent rotate-[45deg] shadow-[0_0_20px_rgba(255,95,31,0.4)]"></div>
+<div class="text-center z-10 relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] text-primary animate-pulse">CRITICALITY</div>
+<span class="material-symbols-outlined text-primary text-5xl mb-1 drop-shadow-[0_0_8px_rgba(255,95,31,0.8)]">warning</span>
+<div class="text-3xl font-bold font-display text-white tracking-widest mt-1">HIGH</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-6">
+<div class="bg-surface-lighter p-3 border border-white/5 text-center hover:border-primary/50 transition-colors group">
+<div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1 group-hover:text-primary">Active</div>
+<div class="text-2xl font-bold text-white font-mono">42</div>
+</div>
+<div class="bg-surface-lighter p-3 border border-white/5 text-center hover:border-gray-500/50 transition-colors group">
+<div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Closed</div>
+<div class="text-2xl font-bold text-gray-500 font-mono group-hover:text-gray-300">105</div>
+</div>
+</div>
+</div>
+</aside>
+<main class="lg:col-span-9 flex flex-col bg-surface-dark border border-white/10 shadow-card relative">
+<div class="p-5 border-b border-white/10 flex flex-wrap justify-between items-center gap-4 bg-surface-dark z-20">
+<h2 class="font-display text-lg font-bold text-white flex items-center gap-3 tracking-widest">
+<span class="w-1 h-6 bg-primary shadow-[0_0_10px_rgba(255,95,31,0.8)]"></span>
+                        INCOMING STREAMS
+                    </h2>
+<div class="flex gap-3 items-center">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-2 text-gray-600 text-sm group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface-lighter border border-white/10 text-gray-300 text-sm pl-9 pr-4 py-1.5 focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none w-64 font-mono placeholder-gray-700 transition-all" placeholder="SEARCH ID // KEYWORD" type="text"/>
+</div>
+<button class="flex items-center gap-2 px-4 py-1.5 bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/50 text-xs font-bold font-display tracking-wider transition-all shadow-[0_0_10px_rgba(255,95,31,0.1)] hover:shadow-[0_0_15px_rgba(255,95,31,0.6)] uppercase">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filter
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto flex-1 bg-surface-dark/50">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-[10px] font-display text-gray-500 border-b border-white/10 bg-surface-lighter">
+<th class="px-6 py-3 font-bold uppercase tracking-wider w-24">ID_REF</th>
+<th class="px-6 py-3 font-bold uppercase tracking-wider">Subject / Entity</th>
+<th class="px-6 py-3 font-bold uppercase tracking-wider">Sev_Lvl</th>
+<th class="px-6 py-3 font-bold uppercase tracking-wider">Timestamp</th>
+<th class="px-6 py-3 font-bold uppercase tracking-wider">Status_Code</th>
+<th class="px-6 py-3 font-bold uppercase tracking-wider text-right">Cmd</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5 font-mono text-sm">
+<tr class="group hover:bg-surface-lighter transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
+<td class="px-6 py-4 text-primary font-bold tracking-wider">#8842-A</td>
+<td class="px-6 py-4">
+<div class="text-white font-bold group-hover:text-primary transition-colors tracking-wide">CORP_FINANCE_LEAK_01</div>
+<div class="text-xs text-gray-500 font-sans">Encrypted Attachment (24MB)</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 text-[10px] font-bold bg-red-900/20 text-red-500 border border-red-500/30 uppercase tracking-widest">CRITICAL</span>
+</td>
+<td class="px-6 py-4 text-gray-500">2023-10-24 14:02</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="status-dot bg-neon-green shadow-neon-green animate-pulse"></span>
+<span class="text-neon-green font-bold text-[10px] uppercase tracking-wider shadow-neon-green">NEW</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"><span class="material-symbols-outlined text-lg">terminal</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-lighter transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
+<td class="px-6 py-4 text-primary font-bold tracking-wider">#8841-B</td>
+<td class="px-6 py-4">
+<div class="text-white font-bold group-hover:text-primary transition-colors tracking-wide">PROJECT_ZEUS_BLUEPRINTS</div>
+<div class="text-xs text-gray-500 font-sans">Audio Log + Transcription</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 text-[10px] font-bold bg-orange-900/20 text-orange-400 border border-orange-500/30 uppercase tracking-widest">HIGH</span>
+</td>
+<td class="px-6 py-4 text-gray-500">2023-10-23 09:15</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="status-dot bg-primary shadow-neon animate-pulse"></span>
+<span class="text-primary font-bold text-[10px] uppercase tracking-wider">IN REVIEW</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"><span class="material-symbols-outlined text-lg">terminal</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-lighter transition-colors cursor-pointer border-l-2 border-transparent hover:border-gray-500 opacity-60 hover:opacity-100">
+<td class="px-6 py-4 text-gray-500 font-bold tracking-wider">#8839-X</td>
+<td class="px-6 py-4">
+<div class="text-gray-400 font-bold group-hover:text-gray-200 transition-colors tracking-wide line-through decoration-gray-600">SECTOR_7_ANOMALY</div>
+<div class="text-xs text-gray-600 font-sans">Video Feed (Corrupted)</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 text-[10px] font-bold bg-gray-800 text-gray-500 border border-gray-600/30 uppercase tracking-widest">LOW</span>
+</td>
+<td class="px-6 py-4 text-gray-600">2023-10-20 11:45</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="status-dot bg-gray-600"></span>
+<span class="text-gray-500 font-bold text-[10px] uppercase tracking-wider">CLOSED</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-600 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"><span class="material-symbols-outlined text-lg">terminal</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-lighter transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
+<td class="px-6 py-4 text-primary font-bold tracking-wider">#8838-C</td>
+<td class="px-6 py-4">
+<div class="text-white font-bold group-hover:text-primary transition-colors tracking-wide">HR_VIOLATION_REPORT</div>
+<div class="text-xs text-gray-500 font-sans">Anonymous text submission</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 text-[10px] font-bold bg-blue-900/20 text-blue-400 border border-blue-500/30 uppercase tracking-widest">MEDIUM</span>
+</td>
+<td class="px-6 py-4 text-gray-500">2023-10-19 16:30</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="status-dot bg-primary shadow-neon animate-pulse"></span>
+<span class="text-primary font-bold text-[10px] uppercase tracking-wider">IN REVIEW</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"><span class="material-symbols-outlined text-lg">terminal</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-lighter transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
+<td class="px-6 py-4 text-primary font-bold tracking-wider">#8837-D</td>
+<td class="px-6 py-4">
+<div class="text-white font-bold group-hover:text-primary transition-colors tracking-wide">WAREHOUSE_THEFT_LOGS</div>
+<div class="text-xs text-gray-500 font-sans">Inventory Database Dump</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 text-[10px] font-bold bg-orange-900/20 text-orange-400 border border-orange-500/30 uppercase tracking-widest">HIGH</span>
+</td>
+<td class="px-6 py-4 text-gray-500">2023-10-19 08:22</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="status-dot bg-neon-green shadow-neon-green animate-pulse"></span>
+<span class="text-neon-green font-bold text-[10px] uppercase tracking-wider shadow-neon-green">NEW</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"><span class="material-symbols-outlined text-lg">terminal</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-3 border-t border-white/5 flex justify-between items-center bg-surface-dark text-xs font-mono">
+<div class="text-gray-500 uppercase">Index Range: 001-005 / Total: 248</div>
+<div class="flex gap-1">
+<button class="px-3 py-1 border border-white/10 hover:border-primary text-gray-500 hover:text-primary disabled:opacity-30 transition-all font-bold uppercase" disabled="">&lt; Prev</button>
+<button class="px-3 py-1 border border-primary bg-primary/20 text-primary font-bold shadow-[0_0_10px_rgba(255,95,31,0.2)]">1</button>
+<button class="px-3 py-1 border border-white/10 hover:border-primary text-gray-500 hover:text-primary transition-all">2</button>
+<button class="px-3 py-1 border border-white/10 hover:border-primary text-gray-500 hover:text-primary transition-all">3</button>
+<span class="text-gray-600 px-2 py-1">...</span>
+<button class="px-3 py-1 border border-white/10 hover:border-primary text-gray-500 hover:text-primary transition-all uppercase">Next &gt;</button>
+</div>
+</div>
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20"></div>
+<div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20"></div>
+<div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20"></div>
+</main>
+</div>
+<footer class="mt-auto grid grid-cols-1 md:grid-cols-4 gap-4 text-[10px] font-mono tracking-wider text-gray-600 uppercase">
+<div class="bg-surface-dark px-4 py-2 border border-white/10 flex justify-between items-center group hover:border-primary/20 transition-colors shadow-card">
+<span>SYSTEM STATUS</span>
+<span class="text-neon-green flex items-center gap-2 drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]">
+<span class="h-1.5 w-1.5 bg-neon-green rounded-full animate-pulse"></span> ONLINE
+                </span>
+</div>
+<div class="bg-surface-dark px-4 py-2 border border-white/10 flex justify-between items-center group hover:border-primary/20 transition-colors shadow-card">
+<span>ENCRYPTION</span>
+<span class="text-primary group-hover:shadow-[0_0_5px_rgba(255,95,31,0.3)] transition-all">AES-256-GCM [LOCKED]</span>
+</div>
+<div class="bg-surface-dark px-4 py-2 border border-white/10 flex justify-between items-center group hover:border-primary/20 transition-colors shadow-card">
+<span>LAST SYNC</span>
+<span class="text-gray-400">00:04:21 UTC</span>
+</div>
+<div class="bg-surface-dark px-4 py-2 border border-white/10 flex justify-between items-center group hover:border-primary/20 transition-colors shadow-card">
+<span>NODE</span>
+<span class="text-gray-400">US-EAST-VA-09</span>
+</div>
+</footer>
+</div>
+</body></html>
