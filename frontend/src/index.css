@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .text-glow {
+        text-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+    }
+    .border-gradient {
+        border: 1px solid transparent;
+        background: linear-gradient(#161920, #161920) padding-box,
+                    linear-gradient(to bottom, #2a2d35, #FF5722) border-box;
+    }
+    .grid-pattern {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+    }
+}
