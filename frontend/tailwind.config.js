@@ -8,28 +8,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#FF5722", // Safety Orange
-        "primary-glow": "rgba(255, 87, 34, 0.4)",
-        "background-light": "#eef2f6", // Fallback
-        "background-dark": "#0f1115", // Deep industrial dark
-        "surface-dark": "#161920", // Slightly lighter surface
-        "surface-light": "#ffffff",
-        "border-dark": "#2a2d35",
-        "border-light": "#d1d5db",
+        primary: "#FF5E00", // Safety Orange from design
+        "primary-glow": "rgba(255, 94, 0, 0.5)",
+        "dark-bg": "#050505", // Deepest background
+        "card-bg": "#0B0C10", // Main container
+        "panel-bg": "#121215", // Inner panels
+        "input-bg": "#1A1B1F",
+        "border-dark": "#27272a", // Zinc 800
       },
       fontFamily: {
-        display: ['"Orbitron"', 'sans-serif'], // For headers
-        body: ['"Rajdhani"', 'sans-serif'], // For body text
+        display: ['"Orbitron"', 'sans-serif'],
+        body: ['"Rajdhani"', 'sans-serif'],
       },
-      borderRadius: {
-        'xl': "1rem",
-        '2xl': "1.5rem",
+      backgroundImage: {
+        'carbon': "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')",
       },
-      boxShadow: {
-        'glow': '0 0 15px rgba(255, 87, 34, 0.3)',
-        'glow-hover': '0 0 25px rgba(255, 87, 34, 0.6)',
-        'inner-glow': 'inset 0 0 20px rgba(0, 0, 0, 0.5)',
-      },
+      animation: {
+        'spin-slow': 'spin 8s linear infinite',
+      }
     },
   },
   plugins: [],
