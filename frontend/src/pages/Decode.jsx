@@ -17,7 +17,7 @@ const Decode = () => {
                 await new Promise(resolve => setTimeout(resolve, 200));
             }
             const response = await api.post('/decodes', payload);
-            return response.data.data;
+            return response.data.data.data;
         },
         onSuccess: (data) => {
             setProgress(100);
