@@ -203,7 +203,7 @@ const ReportConfirmation = () => {
             </div>
 
             <footer className="w-full py-4 text-center border-t border-gray-200 dark:border-border-dark bg-white/80 dark:bg-black/90 text-gray-500 text-xs font-mono uppercase z-10 sticky bottom-0">
-                Phoenix Secure System v2.0.4 • Authorized Personnel Only • <span className="text-primary">Encrypted connection established</span>
+                Paradoxical_Prism System v2.0.4 • Authorized Personnel Only • <span className="text-primary">Encrypted connection established</span>
             </footer>
         </div>
     );

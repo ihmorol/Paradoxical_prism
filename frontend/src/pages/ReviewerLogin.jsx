@@ -93,7 +93,7 @@ const ReviewerLogin = () => {
                         <div className="h-1 w-2 bg-primary"></div>
                         <div className="h-1 w-2 bg-primary ml-1"></div>
                         <div className="flex-grow mx-2 h-[1px] bg-gray-800 self-center"></div>
-                        <div className="text-[9px] font-mono text-gray-500 uppercase">Secured by Phoenix Shield</div>
+                        <div className="text-[9px] font-mono text-gray-500 uppercase">Secured by Paradoxical Shield</div>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@ const ReviewerLogin = () => {
                     <span className="hidden md:inline">Latency: 24ms</span>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <span className="opacity-50">© 2024 Phoenix Corp. All rights reserved.</span>
+                    <span className="opacity-50">© 2026 Paradoxical_Prism. All rights reserved.</span>
                     <span className="text-primary cursor-pointer hover:underline">Privacy Protocol</span>
                 </div>
             </footer>
