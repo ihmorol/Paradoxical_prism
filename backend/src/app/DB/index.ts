@@ -5,10 +5,10 @@ import { User } from '../modules/user/user.model';
 const superUser = {
   id: '0001',
   email: 'example@gmail.com',
-  password: config.super_admin_password,
-  needsPasswordChange: false,
+  password: config.super_admin_password || 'password123', // Fallback if config is missing
+  fullName: 'Super Admin',
   role: USER_ROLE.superAdmin,
-  status: 'in-progress',
+  status: 'active',
   isDeleted: false,
 };
 

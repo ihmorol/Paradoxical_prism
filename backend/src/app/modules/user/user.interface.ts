@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Document } from 'mongoose';
 
-export type TUserRole = 'user' | 'admin';
+export type TUserRole = 'user' | 'admin' | 'superAdmin' | 'reviewer';
 export type TUserStatus = 'active' | 'blocked';
 
 export interface TUser extends Document {

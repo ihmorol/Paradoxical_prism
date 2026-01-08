@@ -2,30 +2,51 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
+import { Report } from '../report/report.model';
+import { hash } from '../../utils/encryption';
 import { TCreateDecodePayload, TDecodeQuery } from './decode.interface';
 import { Decode } from './decode.model';
 import { generateDecodeId } from './decode.utils';
 import { DecodeSearchableFields } from './decode.constant';
 
 const createDecode = async (userId: string, payload: TCreateDecodePayload) => {
-    const user = await User.findOne({ id: userId });
-    if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    // 1. Find the Report
+    const report = await Report.findOne({ report_id: payload.sourceId });
+    if (!report) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Report not found');
+    }
+
+    // 2. Hash the provided key to verify
+    const keyHash = hash(payload.key);
+
+    // 3. Check if hash matches
+    if (keyHash !== report.decode_key_hash) {
+        throw new AppError(httpStatus.FORBIDDEN, 'Invalid Decode Key');
     }
 
     const decodeId = await generateDecodeId();
 
-    // Mock decoding logic or just store request
-    // In real app, we might check the key against the artwork/source
-
     const newDecode = await Decode.create({
         id: decodeId,
-        ...payload,
-        requestedBy: user._id,
-        status: 'pending', // Or 'success' if immediate
+        sourceId: payload.sourceId,
+        key: payload.key, // In real app, consider not saving the key or hashing it again
+        decodedData: 'Access Granted', // Or some log
+        requestedBy: userId,
+        status: 'success',
     });
 
-    return newDecode;
+    // 4. Return the Reveal Data
+    return {
+        success: true,
+        message: 'Decryption Successful',
+        data: {
+            description: report.description,
+            image: report.image,
+            locationContext: report.location_context,
+            category: report.category,
+            timestamp: report.created_at,
+        }
+    };
 };
 
 const getAllDecodes = async (query: TDecodeQuery) => {

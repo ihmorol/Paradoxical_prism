@@ -8,11 +8,13 @@ import ReviewerLogin from "../pages/ReviewerLogin";
 import ReviewerConsoleList from "../pages/ReviewerConsoleList";
 import ReviewerConsoleDetail from "../pages/ReviewerConsoleDetail";
 import ReportConfirmation from "../pages/ReportConfirmation";
+import ErrorPage from "../pages/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
       { path: "report/new", element: <CreateReport /> },

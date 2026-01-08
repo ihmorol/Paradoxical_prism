@@ -4,6 +4,8 @@ export interface IReport extends Document {
     report_id: string;
     category: string;
     location_context: string;
+    description?: string;
+    image?: string;
     encrypted_payload: string;
     encryption_iv: string;
     decode_key_hash: string;
@@ -18,4 +20,5 @@ export interface ICreateReportPayload {
     locationContext: string;
     description: string;
     externalLink?: string;
+    image?: string;
 }

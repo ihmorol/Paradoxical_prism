@@ -1,7 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../lib/api/client';
 
 const ReviewerConsoleList = () => {
+    const { data: reports, isLoading, error } = useQuery({
+        queryKey: ['reports'],
+        queryFn: async () => {
+            const response = await api.get('/reports'); // Changed from /reviewer/reports to /reports based on backend route
+            return response.data.data;
+        },
+    });
+
+    if (isLoading) return <div className="text-white text-center mt-20">Scanning Network...</div>;
+    if (error) return <div className="text-red-500 text-center mt-20">Network Error: {error.message}</div>;
+
     return (
         <div className="flex flex-col h-full bg-dark-bg text-gray-300 font-body overflow-hidden p-4 lg:p-6 max-w-[1600px] mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-hidden h-full">
@@ -11,7 +24,7 @@ const ReviewerConsoleList = () => {
                             <h3 className="text-xs font-display text-gray-500 uppercase tracking-wider">Total Reports</h3>
                             <span className="material-symbols-outlined text-primary text-opacity-80">analytics</span>
                         </div>
-                        <div className="text-4xl font-display font-bold text-white mb-2 tracking-tighter">1,248</div>
+                        <div className="text-4xl font-display font-bold text-white mb-2 tracking-tighter">{reports?.length || 0}</div>
                         <div className="w-full bg-input-bg h-1 mt-2 overflow-hidden">
                             <div className="bg-primary h-full w-3/4 shadow-[0_0_10px_rgba(255,95,31,0.5)] relative">
                                 <div className="absolute right-0 top-0 bottom-0 w-1 bg-white animate-pulse"></div>
@@ -24,7 +37,8 @@ const ReviewerConsoleList = () => {
                             <span className="text-gray-600">PREV_CYCLE_COMP</span>
                         </div>
                     </div>
-                    <div className="bg-surface-dark p-6 border border-white/10 flex-1 flex flex-col justify-between relative overflow-hidden shadow-card min-h-[300px]">
+                    {/* ... (Keep Threat Level Assessment widget same as before or make dynamic if needed) ... */}
+                     <div className="bg-surface-dark p-6 border border-white/10 flex-1 flex flex-col justify-between relative overflow-hidden shadow-card min-h-[300px]">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50"></div>
                         <div>
                             <h3 className="text-xs font-display text-gray-500 uppercase tracking-wider mb-8 text-center border-b border-white/5 pb-2">Threat Level Assessment</h3>
@@ -75,58 +89,37 @@ const ReviewerConsoleList = () => {
                                 <tr className="text-[10px] font-display text-gray-500 border-b border-white/10 bg-input-bg">
                                     <th className="px-6 py-3 font-bold uppercase tracking-wider w-24">ID_REF</th>
                                     <th className="px-6 py-3 font-bold uppercase tracking-wider">Subject / Entity</th>
-                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Sev_Lvl</th>
+                                    <th className="px-6 py-3 font-bold uppercase tracking-wider">Category</th>
                                     <th className="px-6 py-3 font-bold uppercase tracking-wider">Timestamp</th>
                                     <th className="px-6 py-3 font-bold uppercase tracking-wider">Status_Code</th>
                                     <th className="px-6 py-3 font-bold uppercase tracking-wider text-right">Cmd</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5 font-mono text-sm">
-                                <tr className="group hover:bg-input-bg transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
-                                    <td className="px-6 py-4 text-primary font-bold tracking-wider">#8842-A</td>
-                                    <td className="px-6 py-4">
-                                        <div className="text-white font-bold group-hover:text-primary transition-colors tracking-wide">CORP_FINANCE_LEAK_01</div>
-                                        <div className="text-xs text-gray-500 font-sans">Encrypted Attachment (24MB)</div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-2 py-0.5 text-[10px] font-bold bg-red-900/20 text-red-500 border border-red-500/30 uppercase tracking-widest">CRITICAL</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-500">2023-10-24 14:02</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_currentColor] animate-pulse"></span>
-                                            <span className="text-green-500 font-bold text-[10px] uppercase tracking-wider shadow-neon-green">NEW</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <Link to="/reviewer/console/1" className="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded inline-block">
-                                            <span className="material-symbols-outlined text-lg">terminal</span>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                <tr className="group hover:bg-input-bg transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
-                                    <td className="px-6 py-4 text-primary font-bold tracking-wider">#8841-B</td>
-                                    <td className="px-6 py-4">
-                                        <div className="text-white font-bold group-hover:text-primary transition-colors tracking-wide">PROJECT_ZEUS_BLUEPRINTS</div>
-                                        <div className="text-xs text-gray-500 font-sans">Audio Log + Transcription</div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-2 py-0.5 text-[10px] font-bold bg-orange-900/20 text-orange-400 border border-orange-500/30 uppercase tracking-widest">HIGH</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-500">2023-10-23 09:15</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor] animate-pulse"></span>
-                                            <span className="text-primary font-bold text-[10px] uppercase tracking-wider">IN REVIEW</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <Link to="/reviewer/console/2" className="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded inline-block">
-                                            <span className="material-symbols-outlined text-lg">terminal</span>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                {/* More rows can be added here or generated dynamically */}
+                                {reports?.map((report) => (
+                                    <tr key={report._id} className="group hover:bg-input-bg transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary">
+                                        <td className="px-6 py-4 text-primary font-bold tracking-wider">#{report._id.substring(0, 6)}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-white font-bold group-hover:text-primary transition-colors tracking-wide">{report.location_context}</div>
+                                            <div className="text-xs text-gray-500 font-sans line-clamp-1">{report.description}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-2 py-0.5 text-[10px] font-bold bg-white/5 text-gray-300 border border-white/10 uppercase tracking-widest">{report.category}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500">{new Date(report.createdAt).toLocaleString()}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className={`w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor] animate-pulse ${report.status === 'new' ? 'bg-green-500' : 'bg-orange-500'}`}></span>
+                                                <span className={`font-bold text-[10px] uppercase tracking-wider ${report.status === 'new' ? 'text-green-500' : 'text-orange-500'}`}>{report.status}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <Link to={`/reviewer/console/${report._id}`} className="text-gray-500 hover:text-white transition-colors p-1 hover:bg-white/10 rounded inline-block">
+                                                <span className="material-symbols-outlined text-lg">terminal</span>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

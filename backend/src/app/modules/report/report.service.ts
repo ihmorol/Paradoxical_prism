@@ -1,12 +1,12 @@
-import { nanoid } from 'nanoid';
 import crypto from 'crypto';
+import { JwtPayload } from 'jsonwebtoken';
 import { ICreateReportPayload } from './report.interface';
 import { Report } from './report.model';
 import { encrypt, hash } from '../../utils/encryption';
 
 const createReportInDB = async (payload: ICreateReportPayload) => {
     // 1. Generate unique reportId
-    const reportId = nanoid();
+    const reportId = crypto.randomUUID();
 
     // 2. Generate secure random decodeKey
     const decodeKey = crypto.randomBytes(32).toString('hex');
@@ -18,6 +18,7 @@ const createReportInDB = async (payload: ICreateReportPayload) => {
     const dataToEncrypt = JSON.stringify({
         description: payload.description,
         externalLink: payload.externalLink,
+        image: payload.image,
     });
     const encrypted = encrypt(dataToEncrypt);
 
@@ -29,6 +30,8 @@ const createReportInDB = async (payload: ICreateReportPayload) => {
         report_id: reportId, // SAVING report_id
         category: payload.category,
         location_context: payload.locationContext,
+        description: payload.description,
+        image: payload.image,
         encrypted_payload: encrypted.content,
         encryption_iv: encrypted.iv,
         decode_key_hash: decodeKeyHash,
@@ -46,6 +49,24 @@ const createReportInDB = async (payload: ICreateReportPayload) => {
     };
 };
 
+const getAllReportsFromDB = async () => {
+    const result = await Report.find().sort({ created_at: -1 });
+    return result;
+};
+
+const updateReportStatusInDB = async (id: string, status: string) => {
+    const result = await Report.findByIdAndUpdate(id, { status }, { new: true });
+    return result;
+};
+
+const getReportByIdFromDB = async (id: string) => {
+    const result = await Report.findById(id);
+    return result;
+};
+
 export const ReportServices = {
     createReportInDB,
+    getAllReportsFromDB,
+    getReportByIdFromDB,
+    updateReportStatusInDB,
 };

@@ -16,6 +16,14 @@ const reportSchema = new Schema<IReport>(
             type: String,
             required: true,
         },
+        description: {
+            type: String,
+            required: false,
+        },
+        image: {
+            type: String,
+            required: false,
+        },
         encrypted_payload: {
             type: String,
             required: true,

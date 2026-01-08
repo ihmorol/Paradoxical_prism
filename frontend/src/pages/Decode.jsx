@@ -1,28 +1,43 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '../lib/api/client';
+import { toast } from 'sonner';
 
 const Decode = () => {
-    const [isDecrypting, setIsDecrypting] = useState(false);
+    const [sourceId, setSourceId] = useState('');
+    const [key, setKey] = useState('');
+    const [result, setResult] = useState(null);
     const [progress, setProgress] = useState(0);
-    const [unlocked, setUnlocked] = useState(false);
+
+    const mutation = useMutation({
+        mutationFn: async (payload) => {
+            // Simulate progress
+            for (let i = 0; i <= 90; i += 10) {
+                setProgress(i);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            const response = await api.post('/decodes', payload);
+            return response.data.data;
+        },
+        onSuccess: (data) => {
+            setProgress(100);
+            toast.success('Decryption Successful');
+            setResult(data);
+        },
+        onError: (error) => {
+            setProgress(0);
+            toast.error('Decryption Failed: ' + (error.response?.data?.message || error.message));
+            setResult(null);
+        },
+    });
 
     const handleDecode = (e) => {
         e.preventDefault();
-        setIsDecrypting(true);
-        setUnlocked(false);
-        setProgress(0);
-
-        // Simulate progress
-        const interval = setInterval(() => {
-            setProgress((prev) => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    setIsDecrypting(false);
-                    setUnlocked(true);
-                    return 100;
-                }
-                return prev + 5;
-            });
-        }, 100);
+        if (!sourceId || !key) {
+            toast.error('Artifact ID and Key are required');
+            return;
+        }
+        mutation.mutate({ sourceId, key });
     };
 
     return (
@@ -52,7 +67,13 @@ const Decode = () => {
                                 </div>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 material-symbols-outlined">fingerprint</span>
-                                    <input className="w-full bg-surface-dark border border-gray-700 text-white rounded-xl py-4 pl-12 pr-4 font-display text-lg tracking-wider focus:outline-none focus:border-primary transition-all placeholder-gray-600 focus:shadow-[0_0_15px_rgba(255,95,31,0.4)]" placeholder="EX: ART-884-XJ" type="text" />
+                                    <input 
+                                        className="w-full bg-surface-dark border border-gray-700 text-white rounded-xl py-4 pl-12 pr-4 font-display text-lg tracking-wider focus:outline-none focus:border-primary transition-all placeholder-gray-600 focus:shadow-[0_0_15px_rgba(255,95,31,0.4)]" 
+                                        placeholder="EX: ART-884-XJ" 
+                                        type="text" 
+                                        value={sourceId}
+                                        onChange={(e) => setSourceId(e.target.value)}
+                                    />
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                         <div className="h-2 w-8 bg-gray-800 rounded-full overflow-hidden">
                                             <div className="h-full w-2/3 bg-primary opacity-50"></div>
@@ -68,7 +89,13 @@ const Decode = () => {
                                 </div>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 material-symbols-outlined">vpn_key</span>
-                                    <input className="w-full bg-surface-dark border border-gray-700 text-white rounded-xl py-4 pl-12 pr-4 font-display text-lg tracking-wider focus:outline-none focus:border-primary transition-all placeholder-gray-600 focus:shadow-[0_0_15px_rgba(255,95,31,0.4)]" placeholder="•••• •••• •••• ••••" type="password" />
+                                    <input 
+                                        className="w-full bg-surface-dark border border-gray-700 text-white rounded-xl py-4 pl-12 pr-4 font-display text-lg tracking-wider focus:outline-none focus:border-primary transition-all placeholder-gray-600 focus:shadow-[0_0_15px_rgba(255,95,31,0.4)]" 
+                                        placeholder="•••• •••• •••• ••••" 
+                                        type="password" 
+                                        value={key}
+                                        onChange={(e) => setKey(e.target.value)}
+                                    />
                                     <button className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors" type="button">
                                         <span className="material-symbols-outlined text-lg">visibility_off</span>
                                     </button>
@@ -77,12 +104,12 @@ const Decode = () => {
 
                             <div className="pt-4">
                                 <button
-                                    className={`w-full relative overflow-hidden group bg-primary hover:bg-orange-600 text-white font-display font-bold uppercase tracking-widest py-5 rounded-xl transition-all shadow-glow hover:shadow-[0_0_25px_-5px_rgba(255,95,31,0.6)] transform hover:-translate-y-0.5 active:translate-y-0 ${isDecrypting ? 'cursor-not-allowed opacity-80' : ''}`}
-                                    disabled={isDecrypting}
+                                    className={`w-full relative overflow-hidden group bg-primary hover:bg-orange-600 text-white font-display font-bold uppercase tracking-widest py-5 rounded-xl transition-all shadow-glow hover:shadow-[0_0_25px_-5px_rgba(255,95,31,0.6)] transform hover:-translate-y-0.5 active:translate-y-0 ${mutation.isPending ? 'cursor-not-allowed opacity-80' : ''}`}
+                                    disabled={mutation.isPending}
                                 >
                                     <span className="relative z-10 flex items-center justify-center gap-2">
-                                        {isDecrypting && <span className="material-symbols-outlined animate-spin">settings</span>}
-                                        <span>{isDecrypting ? "DECRYPTING..." : "Initiate Sequence"}</span>
+                                        {mutation.isPending && <span className="material-symbols-outlined animate-spin">settings</span>}
+                                        <span>{mutation.isPending ? "DECRYPTING..." : "Initiate Sequence"}</span>
                                     </span>
                                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                                 </button>
@@ -119,24 +146,29 @@ const Decode = () => {
                         </div>
 
                         <div className="flex-grow bg-black rounded-xl relative overflow-hidden flex items-center justify-center border border-gray-800 shadow-inner group">
-                            {!unlocked ? (
+                            {!result ? (
                                 <div className="text-center z-10 transition-opacity duration-500">
                                     <div className="w-32 h-32 mx-auto rounded-full border-4 border-gray-800 flex items-center justify-center relative mb-4">
                                         <span className="material-symbols-outlined text-6xl text-gray-700">lock_clock</span>
-                                        {isDecrypting && <div className="absolute inset-0 rounded-full border-t-4 border-primary animate-spin opacity-50"></div>}
+                                        {mutation.isPending && <div className="absolute inset-0 rounded-full border-t-4 border-primary animate-spin opacity-50"></div>}
                                     </div>
                                     <p className="text-gray-500 font-display uppercase tracking-widest text-sm">Waiting for Key...</p>
                                 </div>
                             ) : (
-                                <div className="absolute inset-0 z-20 bg-panel-dark flex flex-col items-center justify-center p-6 text-center animate-fadeIn">
-                                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 text-primary">
+                                <div className="absolute inset-0 z-20 bg-panel-dark flex flex-col items-center justify-center p-6 text-center animate-fadeIn overflow-y-auto custom-scrollbar">
+                                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 text-primary shrink-0">
                                         <span className="material-symbols-outlined text-3xl">check_circle</span>
                                     </div>
                                     <h4 className="text-white font-display text-2xl font-bold mb-2">ACCESS GRANTED</h4>
                                     <p className="text-gray-400 text-sm mb-4">The artifact contains the following whistleblower testimony:</p>
-                                    <div className="bg-surface-dark border-l-2 border-primary p-3 text-left w-full rounded text-sm text-gray-300 font-mono">
-                                        "Project Zeus overflowed capacity on sector 7. Containment breach was imminent..."
+                                    <div className="bg-surface-dark border-l-2 border-primary p-3 text-left w-full rounded text-sm text-gray-300 font-mono mb-4">
+                                        "{result.description}"
                                     </div>
+                                     {result.image && (
+                                        <div className="w-full rounded overflow-hidden border border-white/10">
+                                            <img src={result.image} alt="Decoded Evidence" className="w-full h-auto" />
+                                        </div>
+                                    )}
                                 </div>
                             )}
                             <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-0 pointer-events-none bg-[length:100%_2px,3px_100%]"></div>

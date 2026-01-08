@@ -1,6 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { api as apiClient } from '../lib/api/client';
 
 const CreateReport = () => {
+    const { register, handleSubmit, reset, setValue } = useForm();
+    const [file, setFile] = useState(null);
+
+    const mutation = useMutation({
+        mutationFn: async (formData) => {
+            const response = await apiClient.post('/reports', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success('Report submitted securely.');
+            reset();
+            setFile(null);
+        },
+        onError: (error) => {
+            toast.error('Transmission failed: ' + error.message);
+        },
+    });
+
+    const onSubmit = (data) => {
+        const formData = new FormData();
+        const payload = {
+            category: data.category,
+            locationContext: data.locationContext,
+            description: data.description,
+            externalLink: 'http://placeholder.com', // Static for now as per minimal req
+        };
+        formData.append('data', JSON.stringify(payload));
+        if (file) {
+            formData.append('file', file);
+        }
+        mutation.mutate(formData);
+    };
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+        }
+    };
+
     return (
         <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 h-full mx-auto p-6 lg:p-8">
             <div className="lg:col-span-8 flex flex-col gap-6">
@@ -27,12 +74,13 @@ const CreateReport = () => {
                 </header>
 
                 <div className="bg-surface-dark border border-white/5 rounded-2xl p-8 shadow-outer-panel flex-grow relative bg-card-bg">
+                    {/* Decorative borders */}
                     <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/50 rounded-tl-lg"></div>
                     <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/50 rounded-tr-lg"></div>
                     <div className="absolute bottom-4 right-4 w-24 h-24 opacity-10 pointer-events-none border-r-2 border-b-2 border-primary rounded-br-xl"></div>
                     <div className="absolute bottom-4 right-4 w-16 h-16 opacity-10 pointer-events-none border-r border-b border-primary rounded-br-lg"></div>
 
-                    <form action="#" className="space-y-8 relative z-10">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-2 group">
                                 <label className="flex justify-between text-xs font-display uppercase tracking-widest text-gray-500 group-focus-within:text-primary transition-colors">
@@ -40,8 +88,8 @@ const CreateReport = () => {
                                     <span className="opacity-0 group-focus-within:opacity-100 transition-opacity text-[10px] bg-primary/20 border border-primary/30 px-1.5 py-0.5 rounded text-primary font-mono">SELECT</span>
                                 </label>
                                 <div className="relative">
-                                    <select className="w-full bg-input-bg text-gray-200 border-none rounded-lg px-4 py-4 shadow-inset-panel focus:ring-1 focus:ring-primary focus:shadow-input-active outline-none transition-all appearance-none cursor-pointer">
-                                        <option disabled defaultValue="">Select Classification...</option>
+                                    <select {...register('category', { required: true })} className="w-full bg-input-bg text-gray-200 border-none rounded-lg px-4 py-4 shadow-inset-panel focus:ring-1 focus:ring-primary focus:shadow-input-active outline-none transition-all appearance-none cursor-pointer">
+                                        <option value="" disabled selected>Select Classification...</option>
                                         <option value="env">Environmental Hazard</option>
                                         <option value="corp">Corporate Malfeasance</option>
                                         <option value="data">Data Breach</option>
@@ -58,7 +106,7 @@ const CreateReport = () => {
                                     <span className="opacity-0 group-focus-within:opacity-100 transition-opacity text-[10px] bg-primary/20 border border-primary/30 px-1.5 py-0.5 rounded text-primary font-mono">GEO-TAG</span>
                                 </label>
                                 <div className="relative">
-                                    <input className="w-full bg-input-bg text-gray-200 placeholder-gray-600 border-none rounded-lg px-4 py-4 pl-12 shadow-inset-panel focus:ring-1 focus:ring-primary outline-none transition-all font-mono" placeholder="Sector 7G, Facility B..." type="text" />
+                                    <input {...register('locationContext', { required: true })} className="w-full bg-input-bg text-gray-200 placeholder-gray-600 border-none rounded-lg px-4 py-4 pl-12 shadow-inset-panel focus:ring-1 focus:ring-primary outline-none transition-all font-mono" placeholder="Sector 7G, Facility B..." type="text" />
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/70 group-focus-within:text-primary transition-colors">
                                         <span className="material-symbols-outlined text-lg">place</span>
                                     </div>
@@ -72,7 +120,7 @@ const CreateReport = () => {
                                 <span className="opacity-0 group-focus-within:opacity-100 transition-opacity text-[10px] bg-primary/20 border border-primary/30 px-1.5 py-0.5 rounded text-primary font-mono">LOG_ENTRY</span>
                             </label>
                             <div className="relative">
-                                <textarea className="w-full bg-input-bg text-gray-200 placeholder-gray-600 border-none rounded-lg px-4 py-4 shadow-inset-panel focus:ring-1 focus:ring-primary outline-none transition-all resize-none font-mono text-sm leading-relaxed" placeholder="Describe the incident details. This information will be embedded into the artwork steganography..." rows="6"></textarea>
+                                <textarea {...register('description', { required: true })} className="w-full bg-input-bg text-gray-200 placeholder-gray-600 border-none rounded-lg px-4 py-4 shadow-inset-panel focus:ring-1 focus:ring-primary outline-none transition-all resize-none font-mono text-sm leading-relaxed" placeholder="Describe the incident details. This information will be embedded into the artwork steganography..." rows="6"></textarea>
                                 <div className="absolute bottom-3 right-3 text-[10px] text-gray-500 font-mono bg-panel-bg px-2 py-1 rounded border border-white/5">
                                     0/5000 BYTES
                                 </div>
@@ -80,11 +128,17 @@ const CreateReport = () => {
                         </div>
 
                         <div className="border border-dashed border-white/10 hover:border-primary/50 hover:bg-input-bg/50 rounded-lg p-8 flex flex-col items-center justify-center bg-input-bg/20 transition-all cursor-pointer group relative overflow-hidden">
+                            <input type="file" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-20" />
                             <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
                             <span className="material-symbols-outlined text-4xl text-gray-600 group-hover:text-primary mb-3 transition-colors relative z-10 group-hover:scale-110 duration-300">cloud_upload</span>
                             <span className="text-sm font-display text-gray-500 uppercase tracking-wider relative z-10 group-hover:text-white transition-colors">Drag Evidence Here or <span className="text-primary underline decoration-primary/50 hover:decoration-primary">Browse</span></span>
                             <span className="text-xs text-gray-600 mt-2 font-mono relative z-10">SUPPORTED: PDF, JPG, PNG, LOG</span>
+                            {file && <div className="relative z-10 mt-2 text-primary font-mono text-sm">{file.name}</div>}
                         </div>
+                        
+                        <button type="submit" disabled={mutation.isPending} className="w-full bg-primary hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg transition-all disabled:opacity-50">
+                            {mutation.isPending ? 'Transmitting...' : 'Submit Secured Report'}
+                        </button>
                     </form>
                 </div>
             </div>
@@ -152,15 +206,9 @@ const CreateReport = () => {
                     </div>
 
                     <div className="mt-8 flex flex-col items-center">
-                        <button className="relative w-28 h-28 rounded-full bg-input-bg border-[6px] border-surface-dark shadow-[0_0_0_2px_rgba(255,255,255,0.05),_8px_8px_20px_black,_-4px_-4px_15px_rgba(255,255,255,0.05)] flex items-center justify-center group active:scale-95 transition-transform duration-150 overflow-hidden outline-none focus:outline-none">
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#2a2c35] to-[#15161c] rounded-full"></div>
-                            <div className="absolute inset-2 rounded-full border border-white/5 bg-gradient-to-br from-white/5 to-transparent"></div>
-                            <span className="material-symbols-outlined text-5xl text-gray-500 group-hover:text-white relative z-10 transition-colors duration-300 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">fingerprint</span>
-                            <div className="absolute inset-0 rounded-full border-2 border-primary opacity-0 group-hover:opacity-100 group-hover:shadow-[0_0_30px_theme('colors.primary')] transition-all duration-300 scale-90 group-hover:scale-100 animate-pulse"></div>
-                        </button>
                         <div className="mt-5 text-center group cursor-pointer">
-                            <span className="font-display font-bold text-white uppercase tracking-widest text-sm group-hover:text-primary transition-colors">Generate</span>
-                            <div className="text-[10px] text-primary uppercase tracking-[0.3em] opacity-80 mt-1 font-mono group-hover:opacity-100 group-hover:drop-shadow-[0_0_5px_#FF5E00]">Hidden Artwork</div>
+                            <span className="font-display font-bold text-white uppercase tracking-widest text-sm group-hover:text-primary transition-colors">Ready</span>
+                            <div className="text-[10px] text-primary uppercase tracking-[0.3em] opacity-80 mt-1 font-mono group-hover:opacity-100 group-hover:drop-shadow-[0_0_5px_#FF5E00]">Encrypted</div>
                         </div>
                     </div>
                 </div>
