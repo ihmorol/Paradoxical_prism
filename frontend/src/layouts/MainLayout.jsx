@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const MainLayout = () => {
     return (
@@ -13,8 +14,11 @@ const MainLayout = () => {
 
             <main className="w-full h-screen bg-card-bg relative z-10 flex flex-col overflow-hidden">
                 <Header />
-                <div className="flex-1 overflow-y-auto relative custom-scrollbar">
-                    <Outlet />
+                <div className="flex-1 overflow-y-auto relative custom-scrollbar flex flex-col">
+                    <div className="flex-1">
+                        <Outlet />
+                    </div>
+                    <Footer />
                 </div>
             </main>
         </div>
