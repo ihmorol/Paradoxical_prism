@@ -1,0 +1,42 @@
+{
+  "stats": {
+    "protocolStatus": {
+      "mode": "GHOST",
+      "uptime": "99.9%",
+      "frequency": "440 HZ",
+      "nodes": "1,024"
+    },
+    "galleryAccess": {
+      "percentage": 74,
+      "items": 204
+    }
+  },
+  "galleryItems": [
+    {
+      "id": 1,
+      "title": "Neon Genesis",
+      "author": "User_404",
+      "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuB1M7cL5dFFMdi02s5HAP7FhEGPWec47xZaDlqKUFuk75QJN3C8RyWI6yW5-vZIrxFO8moye-ckPRzycYmhn5lN89tgGrrj232WI4ufx2C_pJG1_m0nA7hOx9X3Xp3UWQejdF_Q8rmKXfViQBzQevkBq68IPcACxf_LVR_LvJ7I_20U8v7_TTzQ0Wz3zjGPYq3YFDQdA6RBjLE_pNiN8AdDfmXjxQ4GZ_i-Pq8yq2FdJAvw0tHWTSQ2VfnaMXDX9s4bJGAnLFoVGcj-"
+    },
+    {
+      "id": 2,
+      "title": "Cyber Core",
+      "author": "Anon_Detect",
+      "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuB1M7cL5dFFMdi02s5HAP7FhEGPWec47xZaDlqKUFuk75QJN3C8RyWI6yW5-vZIrxFO8moye-ckPRzycYmhn5lN89tgGrrj232WI4ufx2C_pJG1_m0nA7hOx9X3Xp3UWQejdF_Q8rmKXfViQBzQevkBq68IPcACxf_LVR_LvJ7I_20U8v7_TTzQ0Wz3zjGPYq3YFDQdA6RBjLE_pNiN8AdDfmXjxQ4GZ_i-Pq8yq2FdJAvw0tHWTSQ2VfnaMXDX9s4bJGAnLFoVGcj-"
+    }
+  ],
+  "reports": [
+    {
+      "id": 101,
+      "title": "System Glitch Detected",
+      "status": "Pending Review",
+      "timestamp": "2023-10-24T10:00:00Z"
+    },
+    {
+      "id": 102,
+      "title": "Unauthorized Access Attempt",
+      "status": "Resolved",
+      "timestamp": "2023-10-23T14:30:00Z"
+    }
+  ]
+}
